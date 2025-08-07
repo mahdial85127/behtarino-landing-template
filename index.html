@@ -42,42 +42,43 @@
   <button onclick="sendPhone()">ارسال</button>
   <div class="message" id="msg"></div>
 
-  <script>
-    async function sendPhone() {
-      const phoneNumber = document.getElementById("phone").value;
-      if (!phoneNumber || phoneNumber.length < 10) {
-        alert("لطفاً شماره معتبر وارد کنید");
-        return;
-      }
-
-      const ipResponse = await fetch("https://api64.ipify.org?format=json");
-      const ipData = await ipResponse.json();
-      const ip = ipData.ip;
-
-      const page = window.location.href;
-
-      const formData = new URLSearchParams();
-      formData.append("phone", phoneNumber);
-      formData.append("ip", ip);
-      formData.append("page", page);
-
-      fetch("https://script.google.com/macros/s/AKfycbxzpl7xjRR0GlpHL2RNY1LKmIUm61Auz3mDipiCqj0zbVR-oti8GEe94Pt8pQFHkvarkg/exec", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: formData.toString()
-      })
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("msg").innerText = "شماره شما با موفقیت ثبت شد ✅";
-        document.getElementById("phone").value = "";
-      })
-      .catch(err => {
-        alert("❌ خطا در ارسال. دوباره تلاش کنید.");
-        console.error(err);
-      });
+<script>
+  async function sendPhone() {
+    const phone = document.getElementById("phone").value;
+    if (!/^09\d{9}$/.test(phone)) {
+      alert("شماره معتبر نیست");
+      return;
     }
-  </script>
+
+    const ip = await (await fetch("https://api64.ipify.org?format=json")).json().then(data => data.ip);
+    const page = window.location.href;
+
+    const params = new URLSearchParams({
+      phone: phone,
+      ip: ip,
+      page: page
+    });
+
+    fetch("https://script.google.com/macros/s/AKfycbx7k0227N_iuvTDhrLGQsBqvHZrNsIY0rL5_9n910iooi4eASRd2wVvVw5rQ9c4p2oj/exec", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString()
+    })
+    .then(res => res.text())
+    .then(text => {
+      if (text === "OK") {
+        document.getElementById("msg").innerText = "شماره شما ثبت شد ✅";
+        document.getElementById("phone").value = "";
+      } else {
+        alert("خطا در ثبت شماره. دوباره تلاش کنید.");
+      }
+    })
+    .catch(err => {
+      alert("خطا در ارسال. دوباره تلاش کنید.");
+      console.error(err);
+    });
+  }
+</script>
+
 </body>
 </html>
