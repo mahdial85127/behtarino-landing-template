@@ -3,57 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>بهترینو | سایت کسب‌وکار محلی</title>
+  <title>فرم دریافت شماره</title>
   <style>
     body {
       font-family: sans-serif;
-      margin: 0;
       background-color: #f0f4ff;
       direction: rtl;
       text-align: center;
+      padding: 50px 20px;
     }
-    .header {
-      background-color: #061c60;
-      color: white;
-      padding: 60px 20px;
-    }
-    .header h1 {
+    input[type="tel"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 200px;
       margin-bottom: 10px;
     }
-    .btn {
-      background: white;
-      color: #061c60;
-      padding: 10px 30px;
+    button {
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: #061c60;
+      color: white;
+      border: none;
       border-radius: 5px;
-      text-decoration: none;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 20px;
       font-weight: bold;
-    }
-    .section {
-      padding: 40px 20px;
-      background: white;
-    }
-    .footer {
-      background-color: #f0f0f0;
-      padding: 20px;
-      font-size: 13px;
-      color: #555;
+      color: green;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>کسب‌و‌کارت رو رایگان ثبت کن</h1>
-    <p>در کمتر از یک دقیقه سایتت رو بساز و توسط میلیون‌ها نفر دیده شو</p>
-    <a class="btn" href="#">رایگان شروع کن</a>
-  </div>
+  <h1>دریافت شماره موبایل</h1>
+  <p>لطفاً شماره خود را وارد کنید:</p>
+  <input type="tel" id="phone" placeholder="مثلاً 09121234567" />
+  <br />
+  <button onclick="sendPhone()">ارسال</button>
+  <div class="message" id="msg"></div>
 
-  <div class="section">
-    <h2>ویژگی‌ها</h2>
-    <p>دریافت مشتری، دیده‌شدن در جستجو، اتصال شبکه‌های اجتماعی</p>
-  </div>
+  <script>
+    function sendPhone() {
+      const phone = document.getElementById("phone").value;
+      if (!phone || phone.length < 10) {
+        alert("لطفاً شماره معتبر وارد کنید");
+        return;
+      }
 
-  <div class="footer">
-    © 2025 Behtarino Clone. ساخته شده با ❤️ توسط شما.
-  </div>
+      fetch("https://script.google.com/macros/s/AKfycbxzpl7xjRR0GlpHL2RNY1LKmlUm61Auz3mDipiCqj0zbVR-oti8GEe94Pt8pQFHkvarkg/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: phone })
+      })
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("msg").innerText = "شماره شما با موفقیت ثبت شد ✅";
+        document.getElementById("phone").value = "";
+      })
+      .catch(err => {
+        alert("خطا در ارسال. دوباره تلاش کنید.");
+        console.error(err);
+      });
+    }
+  </script>
 </body>
 </html>
