@@ -42,29 +42,35 @@
   <button onclick="sendPhone()">ارسال</button>
   <div class="message" id="msg"></div>
 
-  <script>
-    function sendPhone() {
-      const phone = document.getElementById("phone").value;
-      if (!phone || phone.length < 10) {
-        alert("لطفاً شماره معتبر وارد کنید");
-        return;
-      }
-
-      fetch("https://script.google.com/macros/s/AKfycbxzpl7xjRR0GlpHL2RNY1LKmlUm61Auz3mDipiCqj0zbVR-oti8GEe94Pt8pQFHkvarkg/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: phone })
-      })
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("msg").innerText = "شماره شما با موفقیت ثبت شد ✅";
-        document.getElementById("phone").value = "";
-      })
-      .catch(err => {
-        alert("خطا در ارسال. دوباره تلاش کنید.");
-        console.error(err);
-      });
+<script>
+  function sendPhone() {
+    const phone = document.getElementById("phone").value;
+    if (!phone || phone.length < 10) {
+      alert("لطفاً شماره معتبر وارد کنید");
+      return;
     }
-  </script>
+
+    const formData = new URLSearchParams();
+    formData.append("phone", phone);
+
+    fetch("https://script.google.com/macros/s/AKfycbxzpl7xjRR0GlpHL2RNY1LKmlUm61Auz3mDipiCqj0zbVR-oti8GEe94Pt8pQFHkvarkg/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: formData.toString()
+    })
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("msg").innerText = "شماره شما با موفقیت ثبت شد ✅";
+      document.getElementById("phone").value = "";
+    })
+    .catch(err => {
+      alert("خطا در ارسال. دوباره تلاش کنید.");
+      console.error(err);
+    });
+  }
+</script>
+
 </body>
 </html>
