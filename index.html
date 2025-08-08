@@ -4,81 +4,240 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>دریافت شماره موبایل</title>
+
+  <!-- فونت یکان -->
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/yekan-font@v3.0.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+
   <style>
+    * {
+      font-family: 'Yekan', sans-serif !important;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif;
-      background-color: #f0f4ff;
-      direction: rtl;
+      background: linear-gradient(to bottom, #f0f4ff, #ffffff);
+      margin: 0;
+      padding: 30px 20px;
       text-align: center;
-      padding: 50px 20px;
+      direction: rtl;
     }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    img#media {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .message-box {
+      background: #fffbe6;
+      color: #444;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin: 20px 0 15px 0;
+      color: #061c60;
+    }
+
     input[type="tel"] {
-      padding: 10px;
-      font-size: 16px;
-      width: 200px;
-      margin-bottom: 10px;
+      padding: 15px;
+      font-size: 18px;
+      width: 100%;
+      max-width: 400px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      direction: ltr;
     }
+
     button {
-      padding: 10px 25px;
-      font-size: 16px;
-      background-color: #061c60;
-      color: white;
+      padding: 15px 40px;
+      background: linear-gradient(to right, #10b981, #0ea5e9);
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .message {
-      margin-top: 20px;
+      border-radius: 8px;
       font-weight: bold;
-      color: green;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s ease;
     }
-  </style>
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .msg-success {
+      background: #d1fae5;
+      color: #065f46;
+      font-weight: bold;
+      padding: 18px 20px;
+      border-radius: 10px;
+      display: none;
+      margin-top: 25px;
+      font-size: 20px;
+      box-shadow: 0 0 8px rgba(0, 128, 0, 0.2);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    #loader {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      input[type="tel"], button {
+        width: 100%;
+      }
+    }
+
+
+     #full-loader {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'Yekan', sans-serif;
+  }
+
+  .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #10b981;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  #full-loader p {
+    font-size: 16px;
+    color: #333;
+  }
+</style>
+
+
+
+
 </head>
 <body>
-  <h1>دریافت شماره موبایل</h1>
-  <p>لطفاً شماره خود را وارد کنید:</p>
-  <input type="tel" id="phone" placeholder="مثلاً 09121234567" />
-  <br />
-  <button onclick="sendPhone()">ارسال</button>
-  <div class="message" id="msg"></div>
 
-<script>
-  async function sendPhone() {
-    const phone = document.getElementById("phone").value;
-    if (!/^09\d{9}$/.test(phone)) {
-      alert("شماره معتبر نیست");
-      return;
-    }
+  <div class="container fade-in">
 
-    const ip = await (await fetch("https://api64.ipify.org?format=json")).json().then(data => data.ip);
-    const page = window.location.href;
+    <!-- تصویر -->
+    <img src="https://cdn.hamkadeh.com/Image2.png" id="media" alt="تصویر مشاور" />
 
-    const params = new URLSearchParams({
-      phone: phone,
-      ip: ip,
-      page: page
-    });
+    <!-- پیام انگیزشی -->
+    <div class="message-box">
+      فقط با وارد کردن شماره، مسیر تغییر زندگیت رو شروع کن!
+    </div>
 
-    fetch("https://script.google.com/macros/s/AKfycbx7k0227N_iuvTDhrLGQsBqvHZrNsIY0rL5_9n910iooi4eASRd2wVvVw5rQ9c4p2oj/exec", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString()
-    })
-    .then(res => res.text())
-    .then(text => {
-      if (text === "OK") {
-        document.getElementById("msg").innerText = "شماره شما ثبت شد ✅";
-        document.getElementById("phone").value = "";
-      } else {
-        alert("خطا در ثبت شماره. دوباره تلاش کنید.");
+    <!-- عنوان -->
+    <h2>برای شروع مشاوره، لطفاً اطلاعات تماس خود را وارد کنید</h2>
+
+    <!-- فرم شماره -->
+    <input type="tel" id="phone" placeholder="مثلاً 09121234567" />
+    <br />
+    <button onclick="sendPhone()">همین حالا مشاوره‌تو شروع کن</button>
+
+    
+    <!-- لودر تمام‌صفحه -->
+    <div id="full-loader">
+      <div class="spinner"></div>
+      <p>در حال ثبت اطلاعات شما...</p>
+    </div>
+
+
+
+
+    <!-- پیام موفقیت -->
+    <div class="msg-success" id="msg">✅ شماره شما با موفقیت ثبت شد</div>
+
+  </div>
+
+  <script>
+    async function sendPhone() {
+      const phone = document.getElementById("phone").value;
+      if (!/^09\d{9}$/.test(phone)) {
+        alert("لطفاً شماره موبایل معتبر وارد کنید");
+        return;
       }
-    })
-    .catch(err => {
-      alert("خطا در ارسال. دوباره تلاش کنید.");
-      console.error(err);
-    });
-  }
-</script>
 
+      const loader = document.getElementById("full-loader");
+      const msgBox = document.getElementById("msg");
+      loader.style.display = "flex";
+      msgBox.style.display = "none";
+
+      const ip = await fetch("https://api64.ipify.org?format=json")
+        .then(res => res.json())
+        .then(data => data.ip);
+
+      const page = window.location.href;
+
+      const params = new URLSearchParams({
+        phone: phone,
+        ip: ip,
+        page: page
+      });
+
+      fetch("https://script.google.com/macros/s/AKfycbx7k0227N_iuvTDhrLGQsBqvHZrNsIY0rL5_9n910iooi4eASRd2wVvVw5rQ9c4p2oj/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString()
+      })
+        .then(res => res.text())
+        .then(text => {
+          loader.style.display = "none";
+          if (text === "OK") {
+            msgBox.style.display = "block";
+            document.getElementById("phone").value = "";
+            msgBox.scrollIntoView({ behavior: "smooth" });
+          } else {
+            alert("خطا در ثبت شماره. لطفاً دوباره تلاش کنید.");
+          }
+        })
+        .catch(err => {
+          loader.style.display = "none";
+          alert("خطا در ارسال. لطفاً دوباره تلاش کنید.");
+          console.error(err);
+        });
+    }
+  </script>
 </body>
 </html>
