@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -227,13 +225,12 @@
         .then(text => {
           loader.style.display = "none";
           if (text === "OK") {
-            msgBox.style.display = "block";
-            document.getElementById("phone").value = "";
-            msgBox.scrollIntoView({ behavior: "smooth" });
+            window.location.href = "https://mahdial85127.github.io/thankyou_land/thankyou.html";
           } else {
             alert("خطا در ثبت شماره. لطفاً دوباره تلاش کنید.");
           }
         })
+
         .catch(err => {
           loader.style.display = "none";
           alert("خطا در ارسال. لطفاً دوباره تلاش کنید.");
